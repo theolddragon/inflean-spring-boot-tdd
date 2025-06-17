@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 )
 @DisplayName("POST /seller/signUp")
 public class POST_specs {
+
     @Test
     void 올바르게_요청하면_204_No_Content_상태코드를_반환한다(
         @Autowired TestRestTemplate client
@@ -69,7 +70,7 @@ public class POST_specs {
         "invalid-email@",
         "invalid-email@test",
         "invalid-email@test.",
-        "invalid-email@.com",
+        "invalid-email@.com"
     })
     void email_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다(
         String email,
@@ -152,9 +153,9 @@ public class POST_specs {
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "0123456789",
         "seller_",
-        "seller-",
+        "seller-"
     })
-    void username_속성이_올바른_형식을_따르면_204_No_Content_상태를_반환한다(
+    void username_속성이_올바른_형식을_따르면_204_No_Content_상태코드를_반환한다(
         String username,
         @Autowired TestRestTemplate client
     ) {
@@ -202,7 +203,7 @@ public class POST_specs {
     @ValueSource(strings = {
         "",
         "pass",
-        "pass123",
+        "pass123"
     })
     void password_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다(
         String password,
