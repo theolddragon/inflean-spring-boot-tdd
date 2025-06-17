@@ -33,6 +33,14 @@ public record SellerSignUpController() {
             return ResponseEntity.badRequest().build();
         }
 
+        if (command.password() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (command.password().length() < 8) {
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.noContent().build();
     }
 }
