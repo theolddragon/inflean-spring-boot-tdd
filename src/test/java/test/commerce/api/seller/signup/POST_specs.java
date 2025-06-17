@@ -12,6 +12,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static test.commerce.EmailGenerator.generateEmail;
+import static test.commerce.UsernameGenerator.generateUsername;
 
 @SpringBootTest(
     classes = CommerceApiApp.class,
@@ -26,8 +28,8 @@ public class POST_specs {
     ) {
         // Arrange
         var command = new CreateSellerCommand(
-            "seller@test.com",
-            "seller",
+            generateEmail(),
+            generateUsername(),
             "password"
         );
 
@@ -49,7 +51,7 @@ public class POST_specs {
         // Arrange
         var command = new CreateSellerCommand(
             null,
-            "seller",
+            generateUsername(),
             "password"
         );
 
@@ -79,7 +81,7 @@ public class POST_specs {
         // Arrange
         var command = new CreateSellerCommand(
             email,
-            "seller",
+            generateUsername(),
             "password"
         );
 
@@ -100,7 +102,7 @@ public class POST_specs {
     ) {
         // Arrange
         var command = new CreateSellerCommand(
-            "seller@test.com",
+            generateEmail(),
             null,
             "password"
         );
@@ -131,7 +133,7 @@ public class POST_specs {
     ) {
         // Arrange
         var command = new CreateSellerCommand(
-            "seller@test.com",
+            generateEmail(),
             username,
             "password"
         );
@@ -161,7 +163,7 @@ public class POST_specs {
     ) {
         // Arrange
         var command = new CreateSellerCommand(
-            "seller@test.com",
+            generateEmail(),
             username,
             "password"
         );
@@ -183,8 +185,8 @@ public class POST_specs {
     ) {
         // Arrange
         var command = new CreateSellerCommand(
-            "seller@test.com",
-            "seller",
+            generateEmail(),
+            generateUsername(),
             null
         );
 
@@ -211,8 +213,8 @@ public class POST_specs {
     ) {
         // Arrange
         var command = new CreateSellerCommand(
-            "seller@test.com",
-            "seller",
+            generateEmail(),
+            generateUsername(),
             password
         );
 
@@ -232,18 +234,42 @@ public class POST_specs {
         @Autowired TestRestTemplate client
     ) {
         // Arrange
-        String email = "seller@test.com";
+        String email = generateEmail();
 
         client.postForEntity(
             "/seller/signUp",
-            new CreateSellerCommand(email, "seller", "password"),
+            new CreateSellerCommand(email, generateUsername(), "password"),
             Void.class
         );
 
         // Act
         ResponseEntity<Void> response = client.postForEntity(
             "/seller/signUp",
-            new CreateSellerCommand(email, "seller", "password"),
+            new CreateSellerCommand(email, generateUsername(), "password"),
+            Void.class
+        );
+
+        // Assert
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+    }
+
+    @Test
+    void username_속성에_이미_존재하는_사용자이름이_지정되면_400_Bad_Request_상태코드를_반환한다(
+        @Autowired TestRestTemplate client
+    ) {
+        // Arrange
+        String username = generateUsername();
+
+        client.postForEntity(
+            "/seller/signUp",
+            new CreateSellerCommand(generateEmail(), username, "password"),
+            Void.class
+        );
+
+        // Act
+        ResponseEntity<Void> response = client.postForEntity(
+            "/seller/signUp",
+            new CreateSellerCommand(generateEmail(), username, "password"),
             Void.class
         );
 
