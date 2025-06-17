@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public record SellerSignUpController(SellerRepository repository) {
+public record SellerSignUpController(
+    SellerRepository repository
+) {
 
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
     public static final String USERNAME_REGEX = "^[a-zA-Z0-9_-]{3,}$";
