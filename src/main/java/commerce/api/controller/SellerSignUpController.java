@@ -5,12 +5,14 @@ import commerce.SellerRepository;
 import commerce.command.CreateSellerCommand;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public record SellerSignUpController(
+    PasswordEncoder passwordEncoder,
     SellerRepository repository
 ) {
 
@@ -23,9 +25,11 @@ public record SellerSignUpController(
             return ResponseEntity.badRequest().build();
         }
 
+        String hashedPassword = passwordEncoder.encode(command.password());
         var seller = new Seller();
         seller.setEmail(command.email());
         seller.setUsername(command.username());
+        seller.setHashedPassword(hashedPassword);
 
         try {
             repository.save(seller);
