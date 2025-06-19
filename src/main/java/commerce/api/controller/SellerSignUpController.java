@@ -2,6 +2,7 @@ package commerce.api.controller;
 
 import commerce.Seller;
 import commerce.SellerRepository;
+import commerce.UserPropertyValidator;
 import commerce.command.CreateSellerCommand;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -43,10 +44,6 @@ public record SellerSignUpController(
     private static boolean isCommandValid(CreateSellerCommand command) {
         return isEmailValid(command.email())
             && isUsernameValid(command.username())
-            && isPasswordValid(command.password());
-    }
-
-    private static boolean isPasswordValid(String password) {
-        return password != null && password.length() >= 8;
+            && UserPropertyValidator.isPasswordValid(command.password());
     }
 }
