@@ -1,8 +1,6 @@
 package test.commerce.api.shopper.signup.issuetoken;
 
-import commerce.command.CreateSellerCommand;
 import commerce.command.CreateShopperCommand;
-import commerce.query.IssueSellerToken;
 import commerce.query.IssueShopperToken;
 import commerce.result.AccessTokenCarrier;
 import org.junit.jupiter.api.DisplayName;
