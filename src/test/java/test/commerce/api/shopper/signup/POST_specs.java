@@ -1,6 +1,5 @@
 package test.commerce.api.shopper.signup;
 
-import commerce.Seller;
 import commerce.Shopper;
 import commerce.ShopperRepository;
 import commerce.command.CreateSellerCommand;
