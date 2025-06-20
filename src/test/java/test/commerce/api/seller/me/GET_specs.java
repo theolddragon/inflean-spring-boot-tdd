@@ -57,7 +57,6 @@ public class GET_specs {
     void 접근_토큰을_사용하지_않으면_401_Unauthorized_상태코드를_반환한다(
         @Autowired TestRestTemplate client
     ) {
-
         // Act
         ResponseEntity<Void> response = client.getForEntity(
         "/seller/me",

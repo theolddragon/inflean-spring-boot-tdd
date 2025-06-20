@@ -5,7 +5,18 @@ import commerce.query.IssueShopperToken;
 import commerce.result.AccessTokenCarrier;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
+import static test.commerce.EmailGenerator.generateEmail;
+import static test.commerce.PasswordGenerator.generatePassword;
+import static test.commerce.UsernameGenerator.generateUsername;
+
 public record TestFixture(TestRestTemplate client) {
+
+    public String createShopperThenIssueToken() {
+        String email = generateEmail();
+        String password = generatePassword();
+        this.createShopper(email, generateUsername(), password);
+        return this.issueShopperToken(email, password);
+    }
 
     public void createShopper(String email, String username, String password) {
         var command = new CreateShopperCommand(email, username, password);
