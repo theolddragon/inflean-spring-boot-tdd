@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 import static commerce.UserPropertyValidator.isEmailValid;
 import static commerce.UserPropertyValidator.isUsernameValid;
 
@@ -27,6 +29,7 @@ public record SellerSignUpController(
 
         String hashedPassword = passwordEncoder.encode(command.password());
         var seller = new Seller();
+        seller.setId(UUID.randomUUID());
         seller.setEmail(command.email());
         seller.setUsername(command.username());
         seller.setHashedPassword(hashedPassword);
