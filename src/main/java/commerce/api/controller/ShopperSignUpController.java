@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 import static commerce.UserPropertyValidator.isEmailValid;
 import static commerce.UserPropertyValidator.isPasswordValid;
 import static commerce.UserPropertyValidator.isUsernameValid;
@@ -26,6 +28,7 @@ public record ShopperSignUpController(
 
         String hashedPassword = passwordEncoder.encode(command.password());
         var shopper = new Shopper();
+        shopper.setId(UUID.randomUUID());
         shopper.setEmail(command.email());
         shopper.setUsername(command.username());
         shopper.setHashedPassword(hashedPassword);
