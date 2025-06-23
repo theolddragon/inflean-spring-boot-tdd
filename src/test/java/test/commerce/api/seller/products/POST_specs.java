@@ -33,8 +33,21 @@ public class POST_specs {
     }
 
     @Test
-    void 판매자가_아닌_사용자의_접근_토큰을_사용하면_403_Forbidden_상태코드를_반환한다() {
+    void 판매자가_아닌_사용자의_접근_토큰을_사용하면_403_Forbidden_상태코드를_반환한다(
+        @Autowired TestFixture fixture
+    ) {
+        // Arrange
+        fixture.createShopperThenSetAsDefaultUser();
 
+        // Act
+        ResponseEntity<Void> response = fixture.client().postForEntity(
+            "/seller/products",
+            generateRegisterProductCommand(),
+            Void.class
+        );
+
+        // Assert
+        assertThat(response.getStatusCode().value()).isEqualTo(403);
     }
 
     @Test
