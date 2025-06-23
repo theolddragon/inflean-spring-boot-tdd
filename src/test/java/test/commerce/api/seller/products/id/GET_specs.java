@@ -2,15 +2,18 @@ package test.commerce.api.seller.products.id;
 
 import java.util.UUID;
 
+import commerce.command.RegisterProductCommand;
 import commerce.view.SellerProductView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import test.commerce.ProductAssertions;
 import test.commerce.api.CommerceApiTest;
 import test.commerce.api.TestFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static test.commerce.RegisterProductCommandGenerator.generateRegisterProductCommand;
 
 @CommerceApiTest
 @DisplayName("GET /seller/products/{id}")
@@ -96,14 +99,38 @@ public class GET_specs {
     void 상품_식별자를_올바르게_반환한다(
         @Autowired TestFixture fixture
     ) {
+        // Arrange
+        fixture.createSellerThenSetAsDefaultUser();
+        UUID id = fixture.registerProduct();
 
+        // Act
+        SellerProductView actual = fixture.client().getForObject(
+            "/seller/products/" + id,
+            SellerProductView.class
+        );
+
+        // Assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.id()).isEqualTo(id);
     }
 
     @Test
     void 상품_정보를_올바르게_반환한다(
         @Autowired TestFixture fixture
     ) {
+        // Arrange
+        fixture.createSellerThenSetAsDefaultUser();
+        RegisterProductCommand command = generateRegisterProductCommand();
+        UUID id = fixture.registerProduct(command);
 
+        // Act
+        SellerProductView actual = fixture.client().getForObject(
+            "/seller/products/" + id,
+            SellerProductView.class
+        );
+
+        // Assert
+        assertThat(actual).satisfies(ProductAssertions.isDerivedFrom(command));
     }
 
     @Test
