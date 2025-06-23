@@ -108,7 +108,7 @@ public record TestFixture(TestRestTemplate client) {
 
         URI location = response.getHeaders().getLocation();
         String path = requireNonNull(location).getPath();
-        String id = path.substring("/selller/products/".length());
+        String id = path.substring("/seller/products/".length());
         return UUID.fromString(id);
     }
 }
