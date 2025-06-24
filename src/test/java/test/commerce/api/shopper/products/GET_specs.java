@@ -1,6 +1,7 @@
 package test.commerce.api.shopper.products;
 
 import commerce.view.PageCarrier;
+import commerce.view.ProductView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,6 @@ public class GET_specs {
                 new ParameterizedTypeReference<>() { }
             );
 
-
         // Assert
         assertThat(response.getStatusCode().value()).isEqualTo(200);
     }
@@ -40,10 +40,17 @@ public class GET_specs {
         @Autowired TestFixture fixture
     ) {
         // Arrange
+        fixture.createSellerThenSetAsDefaultUser();
 
         // Act
+        ResponseEntity<PageCarrier<ProductView>> response =
+            fixture.client().exchange(
+                get("/shopper/products").build(),
+                new ParameterizedTypeReference<>() { }
+            );
 
         // Assert
+        assertThat(response.getStatusCode().value()).isEqualTo(403);
     }
 
     @Test
