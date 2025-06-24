@@ -12,6 +12,7 @@ import commerce.command.RegisterProductCommand;
 import commerce.query.IssueSellerToken;
 import commerce.query.IssueShopperToken;
 import commerce.result.AccessTokenCarrier;
+import commerce.view.SellerMeView;
 import org.springframework.boot.test.web.client.LocalHostUriTemplateHandler;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.env.Environment;
@@ -144,5 +145,9 @@ public record TestFixture(
 
     public void deleteAllProducts() {
         productRepository.deleteAll();
+    }
+
+    public SellerMeView getSeller() {
+        return client.getForObject("/seller/me", SellerMeView.class);
     }
 }
