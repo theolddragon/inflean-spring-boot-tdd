@@ -175,10 +175,27 @@ public class GET_specs {
         @Autowired TestFixture fixture
     ) {
         // Arrange
+        fixture.deleteAllProducts();
+
+        fixture.createSellerThenSetAsDefaultUser();
+        fixture.registerProducts(PAGE_SIZE / 2);
+        List<UUID> ids = fixture.registerProducts(PAGE_SIZE);
+        fixture.registerProducts(PAGE_SIZE);
+
+        fixture.createShopperThenSetAsDefaultUser();
+        String token = fixture.consumeProductPage();
 
         // Act
+        ResponseEntity<PageCarrier<ProductView>> response =
+            fixture.client().exchange(
+                get("/shopper/products?continuationToken=" + token).build(),
+                new ParameterizedTypeReference<>() { }
+            );
 
         // Assert
+        assertThat(requireNonNull(response.getBody()).items())
+            .extracting(ProductView::id)
+            .containsExactlyElementsOf(ids.reversed());
     }
 
     @Test

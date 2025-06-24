@@ -12,14 +12,18 @@ import commerce.command.RegisterProductCommand;
 import commerce.query.IssueSellerToken;
 import commerce.query.IssueShopperToken;
 import commerce.result.AccessTokenCarrier;
+import commerce.view.PageCarrier;
+import commerce.view.ProductView;
 import commerce.view.SellerMeView;
 import org.springframework.boot.test.web.client.LocalHostUriTemplateHandler;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import static java.util.Objects.requireNonNull;
+import static org.springframework.http.RequestEntity.get;
 import static test.commerce.EmailGenerator.generateEmail;
 import static test.commerce.PasswordGenerator.generatePassword;
 import static test.commerce.RegisterProductCommandGenerator.generateRegisterProductCommand;
@@ -149,5 +153,15 @@ public record TestFixture(
 
     public SellerMeView getSeller() {
         return client.getForObject("/seller/me", SellerMeView.class);
+    }
+
+    public String consumeProductPage() {
+        ResponseEntity<PageCarrier<ProductView>> response =
+            client().exchange(
+                get("/shopper/products").build(),
+                new ParameterizedTypeReference<>() { }
+            );
+
+        return requireNonNull(response.getBody()).continuationToken();
     }
 }
