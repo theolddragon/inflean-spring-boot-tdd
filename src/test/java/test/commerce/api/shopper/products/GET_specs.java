@@ -3,6 +3,7 @@ package test.commerce.api.shopper.products;
 import java.util.List;
 import java.util.UUID;
 
+import commerce.command.RegisterProductCommand;
 import commerce.view.PageCarrier;
 import commerce.view.ProductView;
 import org.junit.jupiter.api.DisplayName;
@@ -10,11 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
+import test.commerce.ProductAssertions;
 import test.commerce.api.CommerceApiTest;
 import test.commerce.api.TestFixture;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.RequestEntity.get;
+import static test.commerce.RegisterProductCommandGenerator.generateRegisterProductCommand;
 
 @CommerceApiTest
 @DisplayName("GET /shopper/products")
@@ -88,10 +92,26 @@ public class GET_specs {
         @Autowired TestFixture fixture
     ) {
         // Arrange
+        fixture.deleteAllProducts();
+
+        fixture.createSellerThenSetAsDefaultUser();
+        UUID id1 = fixture.registerProduct();
+        UUID id2 = fixture.registerProduct();
+        UUID id3 = fixture.registerProduct();
+
+        fixture.createShopperThenSetAsDefaultUser();
 
         // Act
+        ResponseEntity<PageCarrier<ProductView>> response =
+            fixture.client().exchange(
+                get("/shopper/products").build(),
+                new ParameterizedTypeReference<>() { }
+            );
 
         // Assert
+        assertThat(requireNonNull(response.getBody()).items())
+            .extracting(ProductView::id)
+            .containsExactly(id3, id2, id1);
     }
 
     @Test
@@ -99,10 +119,24 @@ public class GET_specs {
         @Autowired TestFixture fixture
     ) {
         // Arrange
+        fixture.deleteAllProducts();
+
+        fixture.createSellerThenSetAsDefaultUser();
+        RegisterProductCommand command = generateRegisterProductCommand();
+        fixture.registerProduct(command);
+
+        fixture.createShopperThenSetAsDefaultUser();
 
         // Act
+        ResponseEntity<PageCarrier<ProductView>> response =
+            fixture.client().exchange(
+                get("/shopper/products").build(),
+                new ParameterizedTypeReference<>() { }
+            );
 
         // Assert
+        ProductView actual = requireNonNull(response.getBody()).items()[0];
+        assertThat(actual).satisfies(ProductAssertions.isViewDerivedFrom(command));
     }
 
     @Test
