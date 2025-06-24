@@ -1,5 +1,8 @@
 package test.commerce.api.seller.products;
 
+import java.util.List;
+import java.util.UUID;
+
 import commerce.view.ArrayCarrier;
 import commerce.view.SellerProductView;
 import org.junit.jupiter.api.DisplayName;
@@ -40,10 +43,22 @@ public class GET_specs {
         @Autowired TestFixture fixture
     ) {
         // Arrange
+        fixture.createSellerThenSetAsDefaultUser();
+        List<UUID> ids = fixture.registerProducts();
 
         // Act
+        ResponseEntity<ArrayCarrier<SellerProductView>> response =
+            fixture.client().exchange(
+                RequestEntity.get("/seller/products").build(),
+                new ParameterizedTypeReference<>() { }
+            );
 
         // Assert
+        ArrayCarrier<SellerProductView> actual = response.getBody();
+        assertThat(actual).isNotNull();
+        assertThat(actual.items())
+            .extracting(SellerProductView::id)
+            .containsAll(ids);
     }
 
     @Test
