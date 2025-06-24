@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static java.time.ZoneOffset.UTC;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.reverseOrder;
 
 @RestController
 public record SellerProductsController(
@@ -75,6 +77,7 @@ public record SellerProductsController(
         SellerProductView[] items = repository
             .findBySellerId(sellerId)
             .stream()
+            .sorted(comparing(Product::getRegisteredTimeUtc, reverseOrder()))
             .map(SellerProductsController::convertToView)
             .toArray(SellerProductView[]::new);
         return ResponseEntity.ok(new ArrayCarrier<>(items));
