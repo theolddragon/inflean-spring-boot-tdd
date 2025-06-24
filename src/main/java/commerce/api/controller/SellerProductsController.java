@@ -78,9 +78,10 @@ public record SellerProductsController(
     }
 
     @GetMapping("/seller/products")
-    ResponseEntity<?> getProducts() {
+    ResponseEntity<?> getProducts(Principal user) {
+        UUID sellerId = UUID.fromString(user.getName());
         SellerProductView[] items = repository
-            .findAll()
+            .findBySellerId(sellerId)
             .stream()
             .map(product -> new SellerProductView(
                 product.getId(),

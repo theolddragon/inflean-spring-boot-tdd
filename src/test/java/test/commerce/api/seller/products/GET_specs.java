@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import test.commerce.api.CommerceApiTest;
 import test.commerce.api.TestFixture;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @CommerceApiTest
@@ -66,10 +67,23 @@ public class GET_specs {
         @Autowired TestFixture fixture
     ) {
         // Arrange
+        fixture.createSellerThenSetAsDefaultUser();
+        UUID unexpected = fixture.registerProduct();
+
+        fixture.createSellerThenSetAsDefaultUser();
+        fixture.registerProducts();
 
         // Act
+        ResponseEntity<ArrayCarrier<SellerProductView>> response =
+            fixture.client().exchange(
+                RequestEntity.get("/seller/products").build(),
+                new ParameterizedTypeReference<>() { }
+            );
 
         // Assert
+        assertThat(requireNonNull(response.getBody()).items())
+            .extracting(SellerProductView::id)
+            .doesNotContain(unexpected);
     }
 
     @Test
