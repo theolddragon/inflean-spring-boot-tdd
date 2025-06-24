@@ -1,0 +1,10 @@
+security:
+  jwt:
+    secret: 7e2b8c2a-4f1a-4b7e-9c3d-2a1f5e6b8d9f
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          halt_on_error: true
