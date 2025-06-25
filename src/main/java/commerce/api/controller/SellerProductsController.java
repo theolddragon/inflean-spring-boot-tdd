@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import commerce.Product;
 import commerce.ProductRepository;
+import commerce.command.InvalidCommandException;
 import commerce.command.RegisterProductCommand;
 import commerce.view.ArrayCarrier;
 import commerce.view.SellerProductView;
@@ -32,7 +33,7 @@ public record SellerProductsController(
         Principal user
     ) {
         if (!isValidUri(command.imageUri())) {
-            return ResponseEntity.badRequest().build();
+            throw new InvalidCommandException();
         }
 
         UUID id = UUID.randomUUID();
